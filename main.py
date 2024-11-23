@@ -107,5 +107,11 @@ async def call_status(request: Request):
 if __name__ == "__main__":
     if not os.environ.get('TWILIO_AUTH_TOKEN'):
         print("Warning: TWILIO_AUTH_TOKEN not set")
-    port = int(os.getenv("PORT", 8000))
-    uvicorn.run(app, host="0.0.0.0", port=port)
+    port = int(os.getenv("PORT", "8080"))
+    print(f"Starting server on port {port}")
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=port,
+        log_level="info"
+    )
