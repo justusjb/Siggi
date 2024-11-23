@@ -5,10 +5,10 @@ from typing import Dict, List
 
 
 class VertexAIHandler:
-    def __init__(self, project_id: str = None, location: str = "us-central1"):
+    def __init__(self, project_id: str = None, location: str = "europe-west1"):
         # If project_id is None, it will automatically detect from environment
         vertexai.init(project=project_id, location=location)
-        self.model = GenerativeModel("gemini-pro")
+        self.model = GenerativeModel("gemini-1.5-pro-002")
 
     async def get_response(self, messages: List[Dict[str, str]]) -> str:
         chat = self.model.start_chat()
