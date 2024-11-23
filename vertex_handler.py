@@ -1,6 +1,7 @@
 from vertexai import generative_models
 from vertexai.preview.generative_models import GenerativeModel
 import vertexai
+from typing import Dict, List
 
 
 class VertexAIHandler:
