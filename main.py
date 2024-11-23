@@ -6,15 +6,26 @@ from typing import Dict, List
 import os
 from vertex_handler import VertexAIHandler
 from functools import wraps
+import logging
 
+# Set up logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 app = FastAPI()
 
 # Initialize handlers
+logger.info("Initializing Vertex AI handler...")
 vertex_handler = VertexAIHandler()
+logger.info("Vertex AI handler initialized")
+
 twilio_validator = RequestValidator(os.environ.get('TWILIO_AUTH_TOKEN'))
 
 # Conversations store
 conversations: Dict[str, List[Dict[str, str]]] = {}
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("FastAPI application starting up...")
 
 
 def validate_twilio_request(func):
@@ -40,19 +51,26 @@ def validate_twilio_request(func):
 
 @app.get("/")
 async def health_check():
+    """Health check endpoint"""
+    logger.info("Health check called")
     return {"status": "healthy"}
 
 
 @app.post("/webhook/voice")
 @validate_twilio_request
 async def handle_call(request: Request):
+    logger.info("Received voice webhook")
     form_data = await request.form()
     call_sid = form_data.get("CallSid")
     user_input = form_data.get("SpeechResult")
 
+    logger.info(f"Processing call SID: {call_sid}")
+
     response = VoiceResponse()
 
     if call_sid not in conversations:
+        logger.info("Initializing new conversation")
+
         conversations[call_sid] = [
             {
                 "role": "system",
@@ -71,6 +89,7 @@ async def handle_call(request: Request):
         return str(response)
 
     if user_input:
+        logger.info(f"Processing user input: {user_input}")
         conversation = conversations[call_sid]
         conversation.append({"role": "user", "content": user_input})
 
@@ -106,12 +125,15 @@ async def call_status(request: Request):
 
 if __name__ == "__main__":
     if not os.environ.get('TWILIO_AUTH_TOKEN'):
-        print("Warning: TWILIO_AUTH_TOKEN not set")
+        logger.info("Warning: TWILIO_AUTH_TOKEN not set")
     port = int(os.getenv("PORT", "8080"))
-    print(f"Starting server on port {port}")
-    uvicorn.run(
-        "main:app",
-        host="0.0.0.0",
-        port=port,
-        log_level="info"
-    )
+    logger.info(f"Starting server on port {port}")
+    try:
+        uvicorn.run(
+            "main:app",
+            host="0.0.0.0",
+            port=port,
+            log_level="info"
+        )
+    except Exception as e:
+        logger.error(f"Failed to start server: {e}")
