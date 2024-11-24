@@ -16,7 +16,7 @@ class LlmClient:
         return ResponseResponse(
             response_type="response",
             response_id=0,
-            content=f"Hey {self.name}, I'm the TalkTuahBank AI. How can I help you?",
+            content=f"Hey {self.name}, I'm Siggi. How can I help you?",
             content_complete=True,
             end_call=False,
         )
@@ -28,7 +28,7 @@ class LlmClient:
         ]
 
     def prepare_prompt(self, request: ResponseRequiredRequest):
-        system_prompt = """You are a banking assistant helping customers with their inquiries."""
+        system_prompt = """You are a housing assistant helping customers with renting out their empty rooms."""
 
         messages = [{"role": "system", "content": system_prompt}]
         messages.extend(self.convert_transcript_to_openai_messages(request.transcript))
