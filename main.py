@@ -64,7 +64,6 @@ async def handle_webhook(request: Request):
             print("Call started event", post_data["data"]["call_id"])
         elif post_data["event"] == "call_ended":
             print("Call ended event", post_data["data"]["call_id"])
-            send_whatsapp_message()
         elif post_data["event"] == "call_analyzed":
             print("Call analyzed event", post_data["data"]["call_id"])
         else:
@@ -155,6 +154,7 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         await websocket.close(1011, "Server error")
     finally:
         print(f"LLM WebSocket connection closed for {call_id}")
+        send_whatsapp_message()
 
 def send_whatsapp_message():
     client.messages.create(
