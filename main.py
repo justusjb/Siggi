@@ -168,10 +168,11 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         print(f"LLM WebSocket connection closed for {call_id}")
         send_whatsapp_message()
 
-def send_whatsapp_message():
+def send_whatsapp_message(wait: bool = False):
+    if wait:
+        time.sleep(3)
     global last_execution_time
     current_time = time.time()
-
     if last_execution_time is None or (current_time - last_execution_time) >= 120:
         last_execution_time = current_time
         client.messages.create(
@@ -185,9 +186,7 @@ def send_whatsapp_message():
 
 
 @app.post("/send-whatsapp")
-async def send_whatsapp(wait: bool = False):
-    if wait:
-        time.sleep(3)
+async def send_whatsapp():
     client.messages.create(
         from_=source_number,
         body='Alrighty, I will write you as soon as there is a vacancy',
