@@ -163,3 +163,17 @@ def send_whatsapp_message():
         to='whatsapp:' + justus_number
     )
     print("Message sent")
+
+
+@app.post("/send-whatsapp")
+async def send_whatsapp():
+    client.messages.create(
+        from_=source_number,
+        body='Alrighty, I will write you as soon as there is a vacancy',
+        to='whatsapp:' + justus_number
+    )
+    print("Reply sent")
+    return {"status": "success"}
+
+
+
