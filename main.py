@@ -171,10 +171,10 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
 def send_whatsapp_message(wait: bool = False):
     if wait:
         time.sleep(3)
-    global last_execution_time
+    global last_whatsapp_execution_time
     current_time = time.time()
-    if last_execution_time is None or (current_time - last_execution_time) >= 120:
-        last_execution_time = current_time
+    if last_whatsapp_execution_time is None or (current_time - last_whatsapp_execution_time) >= 120:
+        last_whatsapp_execution_time = current_time
         client.messages.create(
             from_=source_number,
             body=f'John Doe has a flat for you. See details and sign the contract here: {contract_url}',
