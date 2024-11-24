@@ -13,6 +13,7 @@ from custom_types import (
 )
 from llm import LlmClient
 from twilio.rest import Client
+import time
 
 
 load_dotenv(override=True)
@@ -36,6 +37,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 retell = Retell(api_key=os.environ["RETELL_API_KEY"])
+
+last_whatsapp_execution_time = None
+
 
 @app.get("/")
 async def health_check():
@@ -157,12 +161,19 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
         send_whatsapp_message()
 
 def send_whatsapp_message():
-    client.messages.create(
-        from_=source_number,
-        body=f'John Doe has a flat for you. See details and sign the contract here: {contract_url}',
-        to='whatsapp:' + justus_number
-    )
-    print("Message sent")
+    global last_execution_time
+    current_time = time.time()
+
+    if last_execution_time is None or (current_time - last_execution_time) >= 120:
+        last_execution_time = current_time
+        client.messages.create(
+            from_=source_number,
+            body=f'John Doe has a flat for you. See details and sign the contract here: {contract_url}',
+            to='whatsapp:' + justus_number
+        )
+        print("Message sent")
+    else:
+        print("Nope, we are not sending the Whatsapp message a second time")
 
 
 @app.post("/send-whatsapp")
