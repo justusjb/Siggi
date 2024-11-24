@@ -125,6 +125,14 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
                     }
                 )
                 return
+            if request_json["interaction_type"] == "update_only" and request_json.get("transcript"):
+                last_messages = request_json["transcript"][-2:]
+                for msg in last_messages:
+                    if (any(keyword in msg["content"].lower() for keyword in ["goodbye", "have a great day", "take care", "bye", "good day", "farewell"])):
+                        print(f"Call ending detected for {call_id}")
+                        send_whatsapp_message(wait=True)
+                        return
+
             if request_json["interaction_type"] == "update_only":
                 return
             if (
@@ -177,7 +185,9 @@ def send_whatsapp_message():
 
 
 @app.post("/send-whatsapp")
-async def send_whatsapp():
+async def send_whatsapp(wait: bool = False):
+    if wait:
+        time.sleep(3)
     client.messages.create(
         from_=source_number,
         body='Alrighty, I will write you as soon as there is a vacancy',
