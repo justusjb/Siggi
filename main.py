@@ -177,7 +177,7 @@ def send_whatsapp_message(wait: bool = False):
         last_whatsapp_execution_time = current_time
         client.messages.create(
             from_=source_number,
-            body=f'John Doe has a flat for you. See details and sign the contract here: {contract_url}',
+            body=f'John Doe has a room for you. See details and sign the contract here: {contract_url}',
             to='whatsapp:' + justus_number
         )
         print("Message sent")
