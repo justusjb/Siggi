@@ -128,11 +128,11 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
             if request_json["interaction_type"] == "update_only" and request_json.get("transcript"):
                 last_messages = request_json["transcript"][-2:]
                 for msg in last_messages:
-                    if (any(keyword in msg["content"].lower() for keyword in ["goodbye", "have a great day", "take care", "bye", "good day", "farewell"])):
+                    if (any(keyword in msg["content"].lower() for keyword in ["goodbye", "have a great day", "take care", "bye", "good day", "farewell", "have a nice day", "see you later", "see you soon", "see you"])):
                         print(f"Call ending detected for {call_id}")
                         send_whatsapp_message(wait=True)
                         return
-
+                return
             if request_json["interaction_type"] == "update_only":
                 return
             if (
