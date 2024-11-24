@@ -110,7 +110,7 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
             if request_json["interaction_type"] == "call_details":
                 print(json.dumps(request_json, indent=2))
 
-                llm_client = LlmClient("Justus")
+                llm_client = LlmClient()
 
                 # Send first message to signal ready of server
                 first_event = llm_client.draft_begin_message()

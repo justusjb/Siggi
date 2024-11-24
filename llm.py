@@ -4,19 +4,18 @@ from custom_types import ResponseRequiredRequest, ResponseResponse, Utterance
 
 
 class LlmClient:
-    def __init__(self, name: str):
+    def __init__(self):
         self.client = AzureOpenAI(
             azure_endpoint="https://jujo0-m3qrhnaz-swedencentral.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-08-01-preview",
             api_version="2024-10-01-preview"
         )
-        self.name = name
         self.model = "gpt-4o-mini"
 
     def draft_begin_message(self):
         return ResponseResponse(
             response_type="response",
             response_id=0,
-            content=f"Hey {self.name}, I'm Siggi. Would you like to rent out a room?",
+            content=f"Hey, I'm Siggi. Would you like to rent out a room?",
             content_complete=True,
             end_call=False,
         )
