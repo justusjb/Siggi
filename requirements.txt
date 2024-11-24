@@ -43,6 +43,7 @@ PyJWT==2.10.0
 python-dateutil==2.9.0.post0
 python-multipart==0.0.17
 requests==2.32.3
+retell-sdk==4.8.0
 rsa==4.9
 shapely==2.0.6
 six==1.16.0
