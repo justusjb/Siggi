@@ -173,7 +173,7 @@ def send_whatsapp_message(wait: bool = False):
         time.sleep(3)
     global last_whatsapp_execution_time
     current_time = time.time()
-    if last_whatsapp_execution_time is None or (current_time - last_whatsapp_execution_time) >= 120:
+    if last_whatsapp_execution_time is None or (current_time - last_whatsapp_execution_time) >= 180:
         last_whatsapp_execution_time = current_time
         client.messages.create(
             from_=source_number,
