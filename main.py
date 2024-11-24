@@ -12,9 +12,21 @@ from custom_types import (
     ResponseRequiredRequest,
 )
 from llm import LlmClient
+from twilio.rest import Client
+
 
 load_dotenv(override=True)
 app = FastAPI()
+
+auth_token = os.environ["TWILIO_AUTH_TOKEN"]
+account_sid = os.environ["TWILIO_ACCOUNT_SID"]
+
+source_number = os.environ["TWILIO_SOURCE_NUMBER"]
+justus_number = os.environ["JUSTUS_NUMBER"]
+contract_url = os.environ["CONTRACT_URL"]
+
+client = Client(account_sid, auth_token)
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,6 +64,7 @@ async def handle_webhook(request: Request):
             print("Call started event", post_data["data"]["call_id"])
         elif post_data["event"] == "call_ended":
             print("Call ended event", post_data["data"]["call_id"])
+            send_whatsapp_message()
         elif post_data["event"] == "call_analyzed":
             print("Call analyzed event", post_data["data"]["call_id"])
         else:
@@ -143,3 +156,10 @@ async def websocket_handler(websocket: WebSocket, call_id: str):
     finally:
         print(f"LLM WebSocket connection closed for {call_id}")
 
+def send_whatsapp_message():
+    client.messages.create(
+        from_=source_number,
+        body=f'John Doe has a flat for you. See details and sign the contract here: {contract_url}',
+        to='whatsapp:' + justus_number
+    )
+    print("Message sent")
